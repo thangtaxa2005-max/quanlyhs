@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment files (QUAN TRỌNG - không push lên GitHub)
+.env
+.env.local
+.env.production
+
+# Next.js
+frontend/.next/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
