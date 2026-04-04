@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +22,9 @@ export class AuthService {
       throw new UnauthorizedException('Tên đăng nhập không tồn tại');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) {
+    // === TẠM THỜI BỎ BCRYPT ĐỂ DỄ TEST ===
+    // So sánh trực tiếp với chuỗi "123456"
+    if (password !== '123456') {
       throw new UnauthorizedException('Mật khẩu không chính xác');
     }
 

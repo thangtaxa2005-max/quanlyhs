@@ -1,27 +1,31 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { AuthModule } from './auth/auth.module';
+// import { UsersModule } from './users/users.module';   // tạm comment vì chưa có module
 import { ClassesModule } from './classes/classes.module';
 import { StudentsModule } from './students/students.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { ScoresModule } from './scores/scores.module';
 import { AttendanceModule } from './attendance/attendance.module';
 
-TypeOrmModule.forRoot({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  synchronize: true,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-}),
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'eduadmin',
+      password: 'edu@123456',
+      database: 'edumanager',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true, // tạm dùng true trong giai đoạn phát triển
+      logging: false,
+    }),
     AuthModule,
+    // UsersModule,           // tạm comment
     ClassesModule,
     StudentsModule,
     SubjectsModule,

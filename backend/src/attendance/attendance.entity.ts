@@ -13,9 +13,9 @@ import { Class } from '../classes/class.entity';
 
 export enum AttendanceStatus {
   PRESENT = 'present',
-  ABSENT = 'absent',
+  ABSENT_PERMISSION = 'absent_permission',
+  ABSENT_NO_PERMISSION = 'absent_nopermission',
   LATE = 'late',
-  EXCUSED = 'excused',
 }
 
 @Entity('attendances')
@@ -25,7 +25,7 @@ export class Attendance {
   id: number;
 
   @Column({ type: 'date' })
-  date: string; // YYYY-MM-DD (ví dụ: 2026-04-01)
+  date: string;
 
   @Column({
     type: 'enum',
@@ -34,20 +34,17 @@ export class Attendance {
   })
   status: AttendanceStatus;
 
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  session?: string;
+
   @Column({ nullable: true, length: 500 })
   note?: string;
 
-  @ManyToOne(() => Student, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Student, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
-  @ManyToOne(() => Class, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Class, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'class_id' })
   class: Class;
 
