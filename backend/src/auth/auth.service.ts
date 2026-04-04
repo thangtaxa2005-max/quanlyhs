@@ -56,4 +56,22 @@ export class AuthService {
       relations: ['role'],
     });
   }
+async seedAdmin() {
+  const existing = await this.userRepository.findOne({
+    where: { username: 'admin' },
+  });
+  if (existing) {
+    return { message: 'Admin đã tồn tại!' };
+  }
+  const password_hash = await bcrypt.hash('Admin@123', 10);
+  const user = this.userRepository.create({
+    username: 'admin',
+    password_hash,
+    full_name: 'Quan tri vien',
+    email: 'admin@quanlyhs.vn',
+    is_active: true,
+  });
+  await this.userRepository.save(user);
+  return { message: 'Tao admin thanh cong!', username: 'admin', password: 'Admin@123' };
+}
 }
