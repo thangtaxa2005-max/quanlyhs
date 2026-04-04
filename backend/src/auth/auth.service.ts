@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -17,27 +18,21 @@ export class AuthService {
       where: { username },
       relations: ['role'],
     });
-
     if (!user) {
-      throw new UnauthorizedException('Tên đăng nhập không tồn tại');
+      throw new UnauthorizedException('Ten dang nhap khong ton tai');
     }
-
-    // === TẠM THỜI BỎ BCRYPT ĐỂ DỄ TEST ===
-    // So sánh trực tiếp với chuỗi "123456"
-    if (password !== '123456') {
-      throw new UnauthorizedException('Mật khẩu không chính xác');
+    const isValid = await bcrypt.compare(password, user.password_hash);
+    if (!isValid) {
+      throw new UnauthorizedException('Mat khau khong chinh xac');
     }
-
     if (!user.is_active) {
-      throw new UnauthorizedException('Tài khoản đã bị khóa');
+      throw new UnauthorizedException('Tai khoan da bi khoa');
     }
-
     const payload = {
       sub: user.id,
       username: user.username,
       role: user.role?.name,
     };
-
     return {
       access_token: this.jwtService.sign(payload),
       user: {
@@ -56,22 +51,23 @@ export class AuthService {
       relations: ['role'],
     });
   }
-async seedAdmin() {
-  const existing = await this.userRepository.findOne({
-    where: { username: 'admin' },
-  });
-  if (existing) {
-    return { message: 'Admin đã tồn tại!' };
+
+  async seedAdmin() {
+    const existing = await this.userRepository.findOne({
+      where: { username: 'admin' },
+    });
+    if (existing) {
+      return { message: 'Admin da ton tai!' };
+    }
+    const password_hash = await bcrypt.hash('Admin@123', 10);
+    const user = this.userRepository.create({
+      username: 'admin',
+      password_hash,
+      full_name: 'Quan tri vien',
+      email: 'admin@quanlyhs.vn',
+      is_active: true,
+    });
+    await this.userRepository.save(user);
+    return { message: 'Tao admin thanh cong!', username: 'admin', password: 'Admin@123' };
   }
-  const password_hash = await bcrypt.hash('Admin@123', 10);
-  const user = this.userRepository.create({
-    username: 'admin',
-    password_hash,
-    full_name: 'Quan tri vien',
-    email: 'admin@quanlyhs.vn',
-    is_active: true,
-  });
-  await this.userRepository.save(user);
-  return { message: 'Tao admin thanh cong!', username: 'admin', password: 'Admin@123' };
-}
 }
