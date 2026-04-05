@@ -23,35 +23,41 @@ export default function DashboardPage() {
     }).catch(() => router.replace("/login"));
   }, [router]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    router.replace("/login");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">QuanLyHS</h1>
+        <h1 className="text-xl font-bold">🎓 QuanLyHS</h1>
         <div className="flex gap-4 items-center">
           <a href="/dashboard" className="hover:underline">Dashboard</a>
-          <a href="/classes" className="hover:underline">Lop hoc</a>
-          <a href="/students" className="hover:underline">Hoc sinh</a>
-          <a href="/subjects" className="hover:underline">Mon hoc</a>
-          <a href="/scores" className="hover:underline">Diem so</a>
-          <a href="/attendance" className="hover:underline">Diem danh</a>
-          <button onClick={() => { localStorage.removeItem("access_token"); router.replace("/login"); }}
-            className="bg-red-500 px-3 py-1 rounded">Dang xuat</button>
+          <a href="/classes" className="hover:underline">Lớp học</a>
+          <a href="/students" className="hover:underline">Học sinh</a>
+          <a href="/subjects" className="hover:underline">Môn học</a>
+          <a href="/scores" className="hover:underline">Điểm số</a>
+          <a href="/attendance" className="hover:underline">Điểm danh</a>
+          <a href="/reports" className="hover:underline">Báo cáo</a>
+          <button onClick={handleLogout}
+            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Đăng xuất</button>
         </div>
       </nav>
       <div className="p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Tong quan he thong</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Tổng quan hệ thống</h2>
         <div className="grid grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-lg shadow text-center">
             <p className="text-4xl font-bold text-blue-600">{stats.classes}</p>
-            <p className="text-gray-600 mt-2">Lop hoc</p>
+            <p className="text-gray-600 mt-2">Lớp học</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow text-center">
             <p className="text-4xl font-bold text-green-600">{stats.students}</p>
-            <p className="text-gray-600 mt-2">Hoc sinh</p>
+            <p className="text-gray-600 mt-2">Học sinh</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow text-center">
             <p className="text-4xl font-bold text-purple-600">{stats.subjects}</p>
-            <p className="text-gray-600 mt-2">Mon hoc</p>
+            <p className="text-gray-600 mt-2">Môn học</p>
           </div>
         </div>
       </div>

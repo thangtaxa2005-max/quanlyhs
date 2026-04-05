@@ -13,6 +13,8 @@ export default function StudentsPage() {
     api.get("/students").then((res) => setStudents(res.data)).catch(() => router.replace("/login"));
   }, [router]);
 
+  const handleLogout = () => { localStorage.removeItem("access_token"); router.replace("/login"); };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
@@ -24,8 +26,8 @@ export default function StudentsPage() {
           <a href="/subjects" className="hover:underline">Môn học</a>
           <a href="/scores" className="hover:underline">Điểm số</a>
           <a href="/attendance" className="hover:underline">Điểm danh</a>
-          <button onClick={() => { localStorage.removeItem("access_token"); router.replace("/login"); }}
-            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Đăng xuất</button>
+          <a href="/reports" className="hover:underline">Báo cáo</a>
+          <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Đăng xuất</button>
         </div>
       </nav>
       <div className="p-8">
@@ -41,7 +43,7 @@ export default function StudentsPage() {
             </tr>
           </thead>
           <tbody>
-            {students.map((s, i) => (
+            {students.length > 0 ? students.map((s, i) => (
               <tr key={s.id} className="border-b hover:bg-gray-50">
                 <td className="p-3">{i + 1}</td>
                 <td className="p-3 font-medium">{s.full_name || s.fullName}</td>
@@ -49,7 +51,9 @@ export default function StudentsPage() {
                 <td className="p-3">{s.gender}</td>
                 <td className="p-3">{s.parent_phone}</td>
               </tr>
-            ))}
+            )) : (
+              <tr><td colSpan={5} className="p-3 text-center text-gray-500">Chưa có dữ liệu</td></tr>
+            )}
           </tbody>
         </table>
       </div>
